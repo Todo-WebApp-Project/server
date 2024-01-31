@@ -2,11 +2,12 @@ package com.example.demo.service;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.Map;
 
-
+@Service
 public class RestJsonService {
     private final String CLIENT_ID = "37831675488-lvf4hlqr6auo5kvocpiifh70dap2r4uo.apps.googleusercontent.com";
     private final String CLIENT_SECRET= "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";

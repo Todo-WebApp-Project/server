@@ -1,27 +1,39 @@
 package com.example.demo.service;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
+import com.example.demo.domain.CalendarListItem;
+import com.example.demo.domain.CalendarListResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
 public class CalendarListService {
     private final String HTTP_REQUEST = "https://www.googleapis.com/calendar/v3/users/me/calendarList";
+    List<String> list = new ArrayList<String>();
 
-    public String getCalendarList(String accessToken){
-        try {
-            String jsonData = "";
-            URL url = new URL(HTTP_REQUEST + "?access_token=" + accessToken);
+    public List<String> getCalendarListId(String accessToken)
+    {
+        RestTemplate restTemplate = new RestTemplate();
 
-            BufferedReader bf;
-            bf = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
-            String line;
-            while((line = bf.readLine()) != null){
-                jsonData+=line;
+        String apiUrl = HTTP_REQUEST + "?access_token=" + accessToken;
+        ResponseEntity<CalendarListResponse> response = restTemplate.getForEntity(apiUrl, CalendarListResponse.class);
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            CalendarListResponse responseBody = response.getBody();
+
+            // items에 대한 처리. items는 사용자가 가지고 있는 캘린더 리스트
+            for (CalendarListItem item : responseBody.getItems()) {
+                list.add(item.getId());
             }
-            return jsonData;
-
-        } catch(Exception e) {
-            return "error";
+        } else {
+            System.out.println("Error: " + response.getStatusCode());
         }
+
+        System.out.println(list.toString());
+
+        return list;
     }
 }
