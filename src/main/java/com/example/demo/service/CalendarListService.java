@@ -10,7 +10,6 @@ public class CalendarListService {
     public String getCalendarList(String accessToken){
         try {
             String jsonData = "";
-
             URL url = new URL(HTTP_REQUEST + "?access_token=" + accessToken);
 
             BufferedReader bf;
