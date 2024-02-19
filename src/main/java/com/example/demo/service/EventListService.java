@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.time.LocalDateTime;
 
 @Service
 public class EventListService {
@@ -17,9 +18,13 @@ public class EventListService {
         try {
             String jsonData = "";
 
+            LocalDateTime dateTime = LocalDateTime.now().minusYears(3);
+
+            System.out.println(dateTime);
+
             // Constructing the URL for the Google Calendar API request
             URL url = new URL(HTTP_REQUEST_PRE + encodedCalendarId + HTTP_REQUEST_POST +
-                    "?access_token=" + accessToken
+                    "?access_token=" + accessToken + "&timeMax="+dateTime+"Z"
             );
 
             BufferedReader bf;

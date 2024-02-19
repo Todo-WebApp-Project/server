@@ -32,8 +32,6 @@ public class CalendarListService {
             System.out.println("Error: " + response.getStatusCode());
         }
 
-        System.out.println(list.toString());
-
         return list;
     }
 }
