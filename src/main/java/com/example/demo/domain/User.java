@@ -1,13 +1,11 @@
 package com.example.demo.domain;
 
-import com.example.demo.domain.Todo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.List;
-
 
 
 @Entity(name="user_details")
@@ -46,11 +44,14 @@ public class User {
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
 	@JsonIgnore
 	private List<Todo> todos;
-
+	
+	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+	@JsonIgnore
+	private List<Schedule> schedules;
 	
 	public User(Integer id, String email, String password,
-			@Size(min = 2, message = "Name should have atleast 2 characters") String username, Integer level,
-			Integer auth, String status_msg) {
+                @Size(min = 2, message = "Name should have atleast 2 characters") String username, Integer level,
+                Integer auth, String status_msg) {
 		super();
 		this.id = id;
 		this.email = email;
@@ -142,12 +143,25 @@ public class User {
 	}
 
 
+	public List<Schedule> getSchedules() {
+		return schedules;
+	}
+
+
+	public void setSchedules(List<Schedule> schedules) {
+		this.schedules = schedules;
+	}
+
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", email=" + email + ", password=" + password + ", username=" + username + ", level="
-				+ level + ", auth=" + auth + ", status_msg=" + status_msg + ", todos=" + todos + "]";
+				+ level + ", auth=" + auth + ", status_msg=" + status_msg + ", todos=" + todos + ", schedules="
+				+ schedules + "]";
 	}
-	
+
+
+
 	
 	
 	

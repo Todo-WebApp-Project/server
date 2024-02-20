@@ -7,8 +7,7 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -17,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Controller
-public class ScheduleController {
+public class GoogleCalendarController {
     private final String ENCODED_HOLIDAY_CALENDAR_ID = "ko.south_korea%23holiday%40group.v.calendar.google.com";
     private final String ENCODED_BIRTHDAY_CALENDAR_ID = "addressbook%23contacts%40group.v.calendar.google.com";
 
@@ -25,11 +24,14 @@ public class ScheduleController {
     EventListService eventListService;
     String accessToken;     //구글 OAuth 2.0 인증 후 받은 사용자의 accessToken
 
+
+
     @Autowired
-    public ScheduleController(CalendarListService calendarListService, EventListService eventListService) {
+    public GoogleCalendarController(CalendarListService calendarListService, EventListService eventListService) {
         super();
         this.calendarListService = calendarListService;
         this.eventListService = eventListService;
+
     }
 
 
@@ -40,7 +42,9 @@ public class ScheduleController {
 
 
     @GetMapping("/test")
-    public String test(@RequestParam("code") String code, Model model) {
+    public String test(@RequestParam("code") String code, Model model) 
+    {
+        String eventJsonData = null;
         RestJsonService restJsonService = new RestJsonService();
         String accessTokenJsonData = restJsonService.getAccessTokenJsonData(code);
 
@@ -63,8 +67,7 @@ public class ScheduleController {
                 /*
                  아직 못한것 : EventListService.java에서 Json 문자열을 클래스에 매핑해야 됌.
                  */
-                String eventJsonData = eventListService.getMyCalendarEventList(accessToken, URLEncoder.encode(id, StandardCharsets.UTF_8.toString()));
-                System.out.println("User Json Data : " + eventJsonData);
+                eventJsonData = eventListService.getMyCalendarEventList(accessToken, URLEncoder.encode(id, StandardCharsets.UTF_8.toString()));
 
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -73,4 +76,9 @@ public class ScheduleController {
 
         return "success";
     }
+
+
+
+
+
 }

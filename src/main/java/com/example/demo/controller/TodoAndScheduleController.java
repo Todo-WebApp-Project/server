@@ -1,12 +1,15 @@
 package com.example.demo.controller;
 
 
+import com.example.demo.domain.Schedule;
 import com.example.demo.domain.Todo;
+import com.example.demo.exception.ScheduleNotFoundException;
 import com.example.demo.exception.TodoNotFoundException;
 import com.example.demo.domain.User;
 import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.repository.TodoRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.ScheduleRepository;
 import jakarta.validation.Valid;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -21,16 +24,22 @@ import java.util.Optional;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+
+
 @RestController
-public class TodoController {
+public class TodoAndScheduleController {
 
 	private UserRepository userRepository;
 	
 	private TodoRepository todoRepository;
 
-	public TodoController(UserRepository userRepository, TodoRepository todoRepository) {
+	private ScheduleRepository schRepository;
+
+
+	public TodoAndScheduleController(UserRepository userRepository, TodoRepository todoRepository, ScheduleRepository schRepository) {
 		this.userRepository = userRepository;
 		this.todoRepository = todoRepository;
+		this.schRepository = schRepository;
 	}
 
 	@GetMapping("/users") // find User all
@@ -197,7 +206,107 @@ public class TodoController {
 	    
 	    return ResponseEntity.ok().build();
 	}
-	
+
+	/*
+	3. Schedule : Find All /Create / Delete /Update Schedule
+	*/
+
+	//one User -> all schedules
+	@GetMapping("/users/{id}/schedules")
+	public List<Schedule> retrieveSchForUser(@PathVariable("id") int id) {
+		try {
+			Optional<User> user = userRepository.findById(id);
+
+			if (user.isEmpty()) {
+				throw new UserNotFoundException("User not found with id: " + id);
+			}
+			return user.get().getSchedules();
+		} catch (Exception e) {
+			throw new RuntimeException("Error retrieving schedules for user with id: " + id, e);
+		}
+	}
+
+
+	//create schedules
+	@PostMapping("/users/{id}/schedules")
+	public ResponseEntity<Object> createSchForUser(@PathVariable int id, @Valid @RequestBody Schedule schedule) {
+
+		Optional<User> user = userRepository.findById(id);
+
+		System.out.println("Empty: " + user.isEmpty());
+
+		if(user.isEmpty())
+			throw new UserNotFoundException("id:"+id);
+
+		schedule.setUser(user.get());
+
+		Schedule savedSch = schRepository.save(schedule);
+
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+				.path("/{id}")
+				.buildAndExpand(savedSch.getId())
+				.toUri();
+
+		return ResponseEntity.created(location).build();
+
+	}
+
+	//delete Schedule
+	@DeleteMapping("/users/{userId}/schedules/{scheduleId}")
+	public ResponseEntity<?> deleteSch(@PathVariable int userId, @PathVariable int scheduleId) {
+		//find user_id
+		Optional<User> userOptional = userRepository.findById(userId);
+		if (userOptional.isEmpty()) {
+			throw new UserNotFoundException("id:" + userId);
+		}
+		//find to exist sche_id
+		Optional<Schedule> schOptional = schRepository.findById(scheduleId);
+		if (schOptional.isEmpty()) {
+			throw new ScheduleNotFoundException("id:" + scheduleId);
+		}
+
+		Schedule schedule = schOptional.get();
+		if (schedule.getUser().getId() != userId) {
+			// schedule가 해당 유저에 속하지 않는 경우에 대한 예외 처리
+			throw new ScheduleNotFoundException("id:" + scheduleId);
+		}
+
+		schRepository.deleteById(scheduleId);
+
+		return ResponseEntity.noContent().build();
+	}
+
+	//Update Schedules
+	@PutMapping("/users/{userId}/schedules/{scheduleId}")
+	public ResponseEntity<?> updateSch(@PathVariable int userId, @PathVariable int scheduleId,
+									   @Valid @RequestBody Schedule updatedSch) {
+		//Exception
+		Optional<User> userOptional = userRepository.findById(userId);
+		if (userOptional.isEmpty()) {
+			throw new UserNotFoundException("id:" + userId);
+		}
+
+		Optional<Schedule> schOptional = schRepository.findById(scheduleId);
+		if (schOptional.isEmpty()) {
+			throw new ScheduleNotFoundException("id:" + scheduleId);
+		}
+
+		Schedule schedule = schOptional.get();
+		if (schedule.getUser().getId() != userId) {
+			throw new ScheduleNotFoundException("id:" + scheduleId);
+		}
+
+		// update Schedule
+		//Sche_id, user_id, color(dcdcdc), start_date , end_date, plan
+
+		schedule.setColor(updatedSch.getColor());
+		schedule.setStart_date(updatedSch.getStart_date());
+		schedule.setEnd_date(updatedSch.getEnd_date());
+		schedule.setPlan(updatedSch.getPlan());
+		schRepository.save(schedule);
+		return ResponseEntity.ok().build();
+	}
+
 
 	
 }
