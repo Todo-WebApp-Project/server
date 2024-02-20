@@ -1,28 +1,23 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.CalendarEvents;
-import com.example.demo.domain.EventListItem;
 import com.example.demo.service.CalendarListService;
 import com.example.demo.service.EventListService;
 import com.example.demo.service.RestJsonService;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.json.JSONObject;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 
 @Controller
-public class HomeController {
+public class ScheduleController {
     private final String ENCODED_HOLIDAY_CALENDAR_ID = "ko.south_korea%23holiday%40group.v.calendar.google.com";
     private final String ENCODED_BIRTHDAY_CALENDAR_ID = "addressbook%23contacts%40group.v.calendar.google.com";
 
@@ -31,7 +26,7 @@ public class HomeController {
     String accessToken;     //구글 OAuth 2.0 인증 후 받은 사용자의 accessToken
 
     @Autowired
-    public HomeController(CalendarListService calendarListService, EventListService eventListService) {
+    public ScheduleController(CalendarListService calendarListService, EventListService eventListService) {
         super();
         this.calendarListService = calendarListService;
         this.eventListService = eventListService;

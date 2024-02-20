@@ -20,8 +20,6 @@ public class EventListService {
 
             LocalDateTime dateTime = LocalDateTime.now().minusYears(3);
 
-            System.out.println(dateTime);
-
             // Constructing the URL for the Google Calendar API request
             URL url = new URL(HTTP_REQUEST_PRE + encodedCalendarId + HTTP_REQUEST_POST +
                     "?access_token=" + accessToken + "&timeMax="+dateTime+"Z"
