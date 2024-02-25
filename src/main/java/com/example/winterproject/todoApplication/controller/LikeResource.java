@@ -57,8 +57,8 @@ public class LikeResource {
     @DeleteMapping("/cancel_like")
     public ResponseEntity<String> cancelLike(@RequestParam("userId") String userId, @RequestParam("todoId") Integer todoId) {
     	LikeId likeId = new LikeId();
-    	likeId.setUserId(userId);
-    	likeId.setTodoId(todoId);
+    	likeId.setUser_id(userId);
+    	likeId.setTodo_id(todoId);
         
         Optional<Like> likeOptional = likeRepository.findById(likeId);
 
@@ -76,12 +76,7 @@ public class LikeResource {
      */
     /*
      * @GetMapping("/like/count")
-     * public ResponseEntity<Long> getLikeCount(@RequestParam("todoId") Integer todoId) {
-        long likeCount = likeRepository.countByTodoId(todoId);
-       
-    
-        return ResponseEntity.ok(likeCount);
-    }
+     * 
      */
     
 }
