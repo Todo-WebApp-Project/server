@@ -1,5 +1,6 @@
 package com.example.demo.domain;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -49,9 +50,19 @@ public class User {
 	@JsonIgnore
 	private List<Schedule> schedules;
 	
+	
+	/// new performance
+	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+	@JsonIgnore
+	private List<Performance> performances;
+
+	
+
+
 	public User(String id, String email, String password,
-                @Size(min = 2, message = "Name should have atleast 2 characters") String username, Integer level,
-                Integer auth, String status_msg) {
+			@Size(min = 2, message = "Name should have atleast 2 characters") String username, Integer level,
+			Integer auth, String status_msg, List<Todo> todos, List<Schedule> schedules,
+			List<com.example.demo.domain.Performance> performances) {
 		super();
 		this.id = id;
 		this.email = email;
@@ -60,6 +71,9 @@ public class User {
 		this.level = level;
 		this.auth = auth;
 		this.status_msg = status_msg;
+		this.todos = todos;
+		this.schedules = schedules;
+		this.performances = performances;
 	}
 
 
@@ -153,12 +167,23 @@ public class User {
 	}
 
 
+	public List<Performance> getPerformances() {
+		return performances;
+	}
+
+
+	public void setPerformances(List<Performance> performances) {
+		this.performances = performances;
+	}
+
+
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", email=" + email + ", password=" + password + ", username=" + username + ", level="
 				+ level + ", auth=" + auth + ", status_msg=" + status_msg + ", todos=" + todos + ", schedules="
-				+ schedules + "]";
+				+ schedules + ", performances=" + performances + "]";
 	}
+
 
 
 

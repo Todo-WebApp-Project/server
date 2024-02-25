@@ -10,6 +10,7 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, String> {
 
 
-    @Query("SELECT id FROM user_details u")
+    @Query("SELECT u.id FROM user_details u")
     List<String> findAllUserIds();
+    
 }

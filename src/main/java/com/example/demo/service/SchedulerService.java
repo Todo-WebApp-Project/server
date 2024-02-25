@@ -60,7 +60,7 @@ public class SchedulerService {
                 performance.setPerform_id(maxPerformId.get()+1);
 
             performance.setPerform_date(LocalDate.now());
-            performance.setUser_id(user.getId());
+            performance.setUser(performance.getUser());
 
 
             if(isAllTodayTodosFinished)

@@ -1,6 +1,5 @@
 package com.example.demo.domain;
 
-
 import java.util.List;
 public class CalendarEvents {
     private String kind;

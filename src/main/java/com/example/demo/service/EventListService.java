@@ -1,13 +1,11 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.CalendarEvents;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Service;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.time.LocalDateTime;
+
+import org.springframework.stereotype.Service;
 
 @Service
 public class EventListService {

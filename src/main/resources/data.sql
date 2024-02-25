@@ -28,4 +28,7 @@ values(30001 , '10001' , 'dcdcdc',current_date(), current_date(), 'birthday');
 
 insert into schedule(id, user_id, color, start_date, end_date, plan)
 values(30002 , '10001' , 'dcdcdc','20240227', '20240301', 'travel in japan');
+-- user_id, perform_date , finish
 
+insert into performance(perform_id, user_id,perform_date,finish)
+values(1,'10001',current_date(),0);
