@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,7 +32,7 @@ public class FollowResource {
 	 }
 	 
 	/*
-	 * 전체 조회
+	 * 전체 사용자 조회 (개발 시 테스트 확인용)
 	 */
 	// GET /follow
 	@GetMapping("/follow")
@@ -40,7 +41,7 @@ public class FollowResource {
 	}
 	 
 	/*
-	 * 팔로우
+	 * 팔로우 => 토큰 필요
 	 */
 	// POST /follow
 	@PostMapping("/follow")
@@ -63,7 +64,7 @@ public class FollowResource {
 	}
 	
 	/*
-	 * 언팔로우
+	 * 언팔로우 => 토큰 필요
 	 */
 	// DELETE /cancel_follow/{following}/{followed}
 	@DeleteMapping("/cancel_follow/{following}/{followed}")
@@ -89,10 +90,15 @@ public class FollowResource {
 	// GET /followers?userId=72e73d4c50fd
 	// 연예인A를 팔로우 하고 있는 사람 목록 반환(연예인 A의 팔로워들)
 	@GetMapping("/followers")
-	public List<Follow> retrieveFollowers(@RequestParam String userId) {
-	    // FollowRepository에서 제공하는 메서드를 사용하여 userId를 팔로우하는 사용자 목록 조회
-	    return followRepository.findByFollowIdFollowing(userId);
-	}
+	public Map<String, List<String>> retrieveFollowers(@RequestParam String userId) {
+        List<String> followedUserNames = followRepository.findByFollowIdFollowed(userId).stream()
+                .map(follow -> {
+                    return follow.getFollowerUser().getName(); // userName으로 반환 
+                })
+                .collect(Collectors.toList());
+
+        return Map.of("following", followedUserNames);
+    }
 
 	
 	/*
@@ -101,9 +107,14 @@ public class FollowResource {
 	// GET /following/?userId=72e73d4c50fd
 	// 연예인A가 팔로우 하고 있는 사람의 목록 반환
 	@GetMapping("/following")
-	public List<Follow> retrieveFollowing(@RequestParam String userId) {
-	    // userId가 팔로우하고 있는 사람들의 목록을 반환
-	    return followRepository.findByFollowIdFollowed(userId);
+	public Map<String, List<String>> retrieveFollowing(@RequestParam String userId) {
+		List<String> followingUserNames = followRepository.findByFollowIdFollowing(userId).stream()
+                .map(follow -> {
+                    return follow.getFollowingUser().getName(); // userName으로 반환 
+                })
+                .collect(Collectors.toList());
+
+        return Map.of("followed", followingUserNames);
 	}
 
 	/*
