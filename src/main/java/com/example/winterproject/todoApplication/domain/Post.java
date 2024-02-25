@@ -13,22 +13,20 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class Todo {
+public class Post {
 
 	@Id
-	@Column(name="todo_id")
+	@Column(name="post_id")
 	@GeneratedValue
-	private Integer todoId;
+	private Integer postId;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="user_id", nullable=false)
 	@JsonIgnore
 	private User user;
 	
-    @Column(name="todo_date")
+	@Column(name="todo_date", nullable=false)
 	private LocalDate todoDate;
-	
-	private String task;
-	
+		
 
 }
