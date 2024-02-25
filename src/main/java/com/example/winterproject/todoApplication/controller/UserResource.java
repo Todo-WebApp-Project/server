@@ -17,12 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.example.winterproject.todoApplication.domain.User;
+import com.example.winterproject.todoApplication.dto.PasswordUpdateRequest;
 import com.example.winterproject.todoApplication.dto.UserInfoResponse;
 import com.example.winterproject.todoApplication.exception.UserNotFoundException;
 import com.example.winterproject.todoApplication.repository.UserRepository;
-import com.example.winterproject.todoApplication.repository.dto.GoogleUserDto;
 
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 @RestController
@@ -95,7 +94,7 @@ public class UserResource {
 	}
 	
 	/*
-	 * 회원정보 조회
+	 * 회원정보 조회 => 발급받은 토큰으로 수정해야 함
 	 */
 	// GET /user_info/{user_id}
 	@GetMapping("/user_info/{user_id}")
@@ -116,7 +115,7 @@ public class UserResource {
 
 
 	/*
-	 * 회원정보 수정
+	 * 회원정보 수정 => 발급받은 토큰으로 수정해야 함
 	 */
 	// PUT /user_info/{user_id}
 	@PutMapping("/user_info/{user_id}")
@@ -137,6 +136,32 @@ public class UserResource {
 	    userRepository.save(existingUser); // 수정된 정보 저장
 	    
 		return ResponseEntity.ok("Successfully modify!");
+	}
+	
+	/*
+	 * 비밀번호 수정 => 발급받은 토큰으로 수정해야 함
+	 */
+	@PutMapping("/modify_pw/{user_id}")
+	public ResponseEntity<String> updatePW(@PathVariable String user_id, @RequestBody PasswordUpdateRequest pwUpdateRequest){
+		
+		Optional<User> userOptional = userRepository.findById(user_id);
+
+	    if (userOptional.isEmpty()) {
+	        throw new UserNotFoundException("id:" + user_id);
+	    }
+
+	    User existingUser = userOptional.get();
+	    
+	    // 현재 비밀번호 확인
+	    if (!existingUser.getPassword().equals(pwUpdateRequest.getCurrentPw())) {
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Current password is incorrect.");
+	    }
+	    
+	    // 새 비밀번호 업데이트
+	    existingUser.setPassword(pwUpdateRequest.getNewPw());
+	    userRepository.save(existingUser); // 수정된 정보 저장
+	    
+	    return ResponseEntity.status(HttpStatus.OK).body("Password Successfully modify!");
 	}
 	
 	/*

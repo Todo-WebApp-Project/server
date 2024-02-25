@@ -1,5 +1,6 @@
 package com.example.winterproject.todoApplication.dto;
 
+// User가 회원정보 조회 시, 전체 정보가 아닌 이메일, 이름, 레벨만 볼 수 있도록 하는 DTO
 public class UserInfoResponse {
     private String email;
     private String name;

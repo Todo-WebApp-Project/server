@@ -41,7 +41,7 @@ public class LikeResource {
 	 * 좋아요
 	 */
     // POST /like
-    @PostMapping("/like")
+    @PostMapping("/like") 
     public ResponseEntity<String> likeTodo(@RequestBody LikeId likeId) {
 	    Like like = new Like();
 	    like.setLikeId(likeId);
