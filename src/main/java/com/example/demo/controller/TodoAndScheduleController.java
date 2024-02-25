@@ -10,6 +10,7 @@ import com.example.demo.exception.UserNotFoundException;
 import com.example.demo.repository.TodoRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.repository.ScheduleRepository;
+import com.example.demo.service.SchedulerService;
 import jakarta.validation.Valid;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -36,7 +38,7 @@ public class TodoAndScheduleController {
 	private ScheduleRepository schRepository;
 
 
-	public TodoAndScheduleController(UserRepository userRepository, TodoRepository todoRepository, ScheduleRepository schRepository) {
+	public TodoAndScheduleController(UserRepository userRepository, TodoRepository todoRepository, ScheduleRepository schRepository ) {
 		this.userRepository = userRepository;
 		this.todoRepository = todoRepository;
 		this.schRepository = schRepository;
@@ -54,7 +56,7 @@ public class TodoAndScheduleController {
 	//WebMvcLinkBuilder
 	// find one
 	@GetMapping("/users/{id}")
-	public EntityModel<User> retrieveUser(@PathVariable int id) {
+	public EntityModel<User> retrieveUser(@PathVariable String id) {
 		Optional<User> user = userRepository.findById(id);
 		
 		if(user.isEmpty())
@@ -73,7 +75,7 @@ public class TodoAndScheduleController {
 	// (2)Todo
 	//one User -> all posting
 	@GetMapping("/users/{id}/todos")
-	public List<Todo> retrievePostsForUser(@PathVariable int id) {
+	public List<Todo> retrievePostsForUser(@PathVariable String id) {
 		Optional<User> user = userRepository.findById(id);
 		
 		if(user.isEmpty())
@@ -84,7 +86,7 @@ public class TodoAndScheduleController {
 	}
 	// delete user
 	@DeleteMapping("/users/{id}")
-	public void deleteUser(@PathVariable int id) {
+	public void deleteUser(@PathVariable String id) {
 		userRepository.deleteById(id);
 	}
 	
@@ -107,7 +109,7 @@ public class TodoAndScheduleController {
 	//create Todo
 	// 
 	@PostMapping("/users/{id}/todos")
-	public ResponseEntity<Object> createTodoForUser(@PathVariable int id, @Valid @RequestBody Todo todo) {
+	public ResponseEntity<Object> createTodoForUser(@PathVariable String id, @Valid @RequestBody Todo todo) {
 		Optional<User> user = userRepository.findById(id);
 		
 		if(user.isEmpty())
@@ -128,7 +130,7 @@ public class TodoAndScheduleController {
 	
 	//delete Todo
 	@DeleteMapping("/users/{userId}/todos/{todoId}")
-	public ResponseEntity<?> deleteTodo(@PathVariable int userId, @PathVariable int todoId) {
+	public ResponseEntity<?> deleteTodo(@PathVariable String userId, @PathVariable int todoId) {
 	    //find user_id
 		Optional<User> userOptional = userRepository.findById(userId);
 	    if (userOptional.isEmpty()) {
@@ -153,7 +155,7 @@ public class TodoAndScheduleController {
 	
 	//Update Todo
 	@PutMapping("/users/{userId}/todos/{todoId}")
-	public ResponseEntity<?> updateTodo(@PathVariable int userId, @PathVariable int todoId, @Valid @RequestBody Todo updatedTodo) {
+	public ResponseEntity<?> updateTodo(@PathVariable String userId, @PathVariable int todoId, @Valid @RequestBody Todo updatedTodo) {
 	    //Exception
 		Optional<User> userOptional = userRepository.findById(userId);
 	    if (userOptional.isEmpty()) {
@@ -166,7 +168,7 @@ public class TodoAndScheduleController {
 	    }
 	    
 	    Todo todo = todoOptional.get();
-	    if (todo.getUser().getId() != userId) {
+	    if (!Objects.equals(todo.getUser().getId(), userId)) {
 	        
 	        throw new TodoNotFoundException("id:" + todoId);
 	    }
@@ -180,7 +182,7 @@ public class TodoAndScheduleController {
 	    todoRepository.save(todo);    
 	    return ResponseEntity.ok().build();
 	}
-	
+
 	// todo finished T/F function
 	@PatchMapping("/users/{userId}/todos/{todoId}/todoChecking")
 	public ResponseEntity<?> togglePostFinished(@PathVariable int userId,@PathVariable int todoId) {
@@ -199,7 +201,6 @@ public class TodoAndScheduleController {
 	    		break;
 	    	case 1 : newState= 0;
 	    		break;
-	    	
 	    }
 	    todo.setFinish(newState);
 	    todoRepository.save(todo);
@@ -213,7 +214,7 @@ public class TodoAndScheduleController {
 
 	//one User -> all schedules
 	@GetMapping("/users/{id}/schedules")
-	public List<Schedule> retrieveSchForUser(@PathVariable("id") int id) {
+	public List<Schedule> retrieveSchForUser(@PathVariable("id") String id) {
 		try {
 			Optional<User> user = userRepository.findById(id);
 
@@ -229,7 +230,7 @@ public class TodoAndScheduleController {
 
 	//create schedules
 	@PostMapping("/users/{id}/schedules")
-	public ResponseEntity<Object> createSchForUser(@PathVariable int id, @Valid @RequestBody Schedule schedule) {
+	public ResponseEntity<Object> createSchForUser(@PathVariable String id, @Valid @RequestBody Schedule schedule) {
 
 		Optional<User> user = userRepository.findById(id);
 
@@ -253,7 +254,7 @@ public class TodoAndScheduleController {
 
 	//delete Schedule
 	@DeleteMapping("/users/{userId}/schedules/{scheduleId}")
-	public ResponseEntity<?> deleteSch(@PathVariable int userId, @PathVariable int scheduleId) {
+	public ResponseEntity<?> deleteSch(@PathVariable String userId, @PathVariable int scheduleId) {
 		//find user_id
 		Optional<User> userOptional = userRepository.findById(userId);
 		if (userOptional.isEmpty()) {
@@ -266,7 +267,7 @@ public class TodoAndScheduleController {
 		}
 
 		Schedule schedule = schOptional.get();
-		if (schedule.getUser().getId() != userId) {
+		if (!Objects.equals(schedule.getUser().getId(), userId)) {
 			// schedule가 해당 유저에 속하지 않는 경우에 대한 예외 처리
 			throw new ScheduleNotFoundException("id:" + scheduleId);
 		}
@@ -278,7 +279,7 @@ public class TodoAndScheduleController {
 
 	//Update Schedules
 	@PutMapping("/users/{userId}/schedules/{scheduleId}")
-	public ResponseEntity<?> updateSch(@PathVariable int userId, @PathVariable int scheduleId,
+	public ResponseEntity<?> updateSch(@PathVariable String userId, @PathVariable int scheduleId,
 									   @Valid @RequestBody Schedule updatedSch) {
 		//Exception
 		Optional<User> userOptional = userRepository.findById(userId);
@@ -292,7 +293,7 @@ public class TodoAndScheduleController {
 		}
 
 		Schedule schedule = schOptional.get();
-		if (schedule.getUser().getId() != userId) {
+		if (!Objects.equals(schedule.getUser().getId(), userId)) {
 			throw new ScheduleNotFoundException("id:" + scheduleId);
 		}
 

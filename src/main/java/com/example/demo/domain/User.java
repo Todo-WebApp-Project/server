@@ -17,7 +17,7 @@ public class User {
 	// user_id, email, password, username, level, auth, status_msg
 	@Id
 	@GeneratedValue
-	private Integer id;
+	private String id;
 	
 	private String email;
 	
@@ -49,7 +49,7 @@ public class User {
 	@JsonIgnore
 	private List<Schedule> schedules;
 	
-	public User(Integer id, String email, String password,
+	public User(String id, String email, String password,
                 @Size(min = 2, message = "Name should have atleast 2 characters") String username, Integer level,
                 Integer auth, String status_msg) {
 		super();
@@ -63,12 +63,12 @@ public class User {
 	}
 
 
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
 
 
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
