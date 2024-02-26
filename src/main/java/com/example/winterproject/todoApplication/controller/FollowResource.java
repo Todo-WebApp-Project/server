@@ -90,8 +90,8 @@ public class FollowResource {
 	// GET /followers?userId=72e73d4c50fd
 	// 연예인A를 팔로우 하고 있는 사람 목록 반환(연예인 A의 팔로워들)
 	@GetMapping("/followers")
-	public Map<String, List<String>> retrieveFollowers(@RequestParam String userId) {
-        List<String> followedUserNames = followRepository.findByFollowIdFollowed(userId).stream()
+	public Map<String, List<String>> retrieveFollowers(@RequestParam String followed) {
+        List<String> followedUserNames = followRepository.findByFollowIdFollowed(followed).stream()
                 .map(follow -> {
                     return follow.getFollowerUser().getName(); // userName으로 반환 
                 })
@@ -104,11 +104,11 @@ public class FollowResource {
 	/*
 	 *  팔로잉 조회
 	 */
-	// GET /following/?userId=72e73d4c50fd
+	// GET /following?userId=72e73d4c50fd
 	// 연예인A가 팔로우 하고 있는 사람의 목록 반환
 	@GetMapping("/following")
-	public Map<String, List<String>> retrieveFollowing(@RequestParam String userId) {
-		List<String> followingUserNames = followRepository.findByFollowIdFollowing(userId).stream()
+	public Map<String, List<String>> retrieveFollowing(@RequestParam String follower) {
+		List<String> followingUserNames = followRepository.findByFollowIdFollowing(follower).stream()
                 .map(follow -> {
                     return follow.getFollowingUser().getName(); // userName으로 반환 
                 })
