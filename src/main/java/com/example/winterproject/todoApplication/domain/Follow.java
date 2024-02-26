@@ -2,6 +2,8 @@ package com.example.winterproject.todoApplication.domain;
 
 import java.io.Serializable;
 
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -12,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity(name="follow")
+@EntityScan
 public class Follow implements Serializable{
 	@EmbeddedId
 	@Column(name="follow_id")

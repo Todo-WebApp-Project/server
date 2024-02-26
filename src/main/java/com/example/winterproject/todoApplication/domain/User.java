@@ -1,7 +1,11 @@
 package com.example.winterproject.todoApplication.domain;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -13,6 +17,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 
 @Entity(name="users")
+@EntityScan
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
 	
@@ -38,6 +43,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<Todo> todo;
+    
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private Set<Post> posts = new HashSet<>();
     
     @PrePersist
     public void generateUUID() {
@@ -107,12 +116,23 @@ public class User {
 	public void setTodo(List<Todo> todo) {
 		this.todo = todo;
 	}
+	
+	public Set<Post> getPosts() {
+		return posts;
+	}
+
+	public void setPosts(Set<Post> posts) {
+		this.posts = posts;
+	}
 
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", email=" + email + ", password=" + password + ", name=" + name + ", level="
-				+ level + ", followers=" + followers + ", followings=" + followings + ", todo=" + todo + "]";
+				+ level + ", followers=" + followers + ", followings=" + followings + ", todo=" + todo + ", posts="
+				+ posts + "]";
 	}
+
+	
 	
 	
 	
