@@ -24,8 +24,8 @@ public class Like implements Serializable{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    @JoinColumn(name = "todo_id", insertable = false, updatable = false)
-    private Todo todo;
+    @JoinColumn(name = "post_id", insertable = false, updatable = false)
+    private Post post;
 
 	public LikeId getLikeId() {
 		return likeId;
@@ -43,18 +43,19 @@ public class Like implements Serializable{
 		this.user = user;
 	}
 
-	public Todo getTodo() {
-		return todo;
+	public Post getPost() {
+		return post;
 	}
 
-	public void setTodo(Todo todo) {
-		this.todo = todo;
+	public void setPost(Post post) {
+		this.post = post;
 	}
 
 	@Override
 	public String toString() {
-		return "Like [likeId=" + likeId + ", user=" + user + ", todo=" + todo + "]";
+		return "Like [likeId=" + likeId + ", user=" + user + ", post=" + post + "]";
 	}
-	
     
+    
+
 }

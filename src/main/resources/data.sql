@@ -29,10 +29,10 @@ insert into todo(todo_id, post_id, user_id, todo_date, task, finish) values (10,
 insert into todo(todo_id, post_id, user_id, todo_date, task, finish) values (11, 6, '4', '2024-03-01', 'Attend workshop', 1);
 
 -- Like 더미데이터
-insert into likes(user_id, todo_id) values('1', 1);
-insert into likes(user_id, todo_id) values('2', 1);
-insert into likes(user_id, todo_id) values('3', 1);
-insert into likes(user_id, todo_id) values('4', 1);
-insert into likes(user_id, todo_id) values('1', 2);
-insert into likes(user_id, todo_id) values('2', 2);
+insert into likes(user_id, post_id) values('1', 1);
+insert into likes(user_id, post_id) values('2', 1);
+insert into likes(user_id, post_id) values('3', 1);
+insert into likes(user_id, post_id) values('4', 1);
+insert into likes(user_id, post_id) values('1', 2);
+insert into likes(user_id, post_id) values('2', 2);
 

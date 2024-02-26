@@ -29,7 +29,7 @@ public class LikeResource {
 	}
 	
 	/*
-	 * 전체 조회
+	 * 전체 조회 (개발 테스트용)
 	 */
 	// GET /like
 	@GetMapping("/like")
@@ -55,10 +55,10 @@ public class LikeResource {
      */
     // DELETE /cancel_like?userId=72e73d4c50fdj&postId=1
     @DeleteMapping("/cancel_like")
-    public ResponseEntity<String> cancelLike(@RequestParam("userId") String userId, @RequestParam("todoId") Integer todoId) {
+    public ResponseEntity<String> cancelLike(@RequestParam("userId") String userId, @RequestParam("postId") Long postId) {
     	LikeId likeId = new LikeId();
     	likeId.setUser_id(userId);
-    	likeId.setTodo_id(todoId);
+    	likeId.setPost_id(postId);
         
         Optional<Like> likeOptional = likeRepository.findById(likeId);
 
@@ -70,13 +70,5 @@ public class LikeResource {
             return ResponseEntity.badRequest().body("Like not found.");
         }
     }
-    
-    /*
-     * 특정 게시물의 좋아요 수 조회
-     */
-    /*
-     * @GetMapping("/like/count")
-     * 
-     */
     
 }

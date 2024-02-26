@@ -6,13 +6,13 @@ import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class LikeId implements Serializable {
-	private Integer todo_id; 
+	private Long post_id; 
     private String user_id;
-	public Integer getTodo_id() {
-		return todo_id;
+	public Long getPost_id() {
+		return post_id;
 	}
-	public void setTodo_id(Integer todo_id) {
-		this.todo_id = todo_id;
+	public void setPost_id(Long post_id) {
+		this.post_id = post_id;
 	}
 	public String getUser_id() {
 		return user_id;
@@ -22,10 +22,8 @@ public class LikeId implements Serializable {
 	}
 	@Override
 	public String toString() {
-		return "LikeId [todo_id=" + todo_id + ", user_id=" + user_id + "]";
+		return "LikeId [post_id=" + post_id + ", user_id=" + user_id + "]";
 	}
-    
-    
-    
+       
 	
 }
