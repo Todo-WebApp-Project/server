@@ -32,6 +32,7 @@ public class Post {
     private List<Todo> todos = new ArrayList<>();
     
     private LocalDate todoDate;
+    
 	public Post(Long postId, User user, List<Todo> todos, LocalDate todoDate) {
 		super();
 		this.postId = postId;

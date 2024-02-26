@@ -16,9 +16,13 @@ public class PostResponse {
     public static class TaskResponse {
         private String task;
         private int finish;
-		public TaskResponse(String task, int finish) {
-		
+        public TaskResponse(String task, int finish) {
+			super();
+			this.task = task;
+			this.finish = finish;
 		}
+        
+        
 		public String getTask() {
 			return task;
 		}
@@ -31,6 +35,7 @@ public class PostResponse {
 		public void setFinish(int finish) {
 			this.finish = finish;
 		}
+		
 
     }
 
