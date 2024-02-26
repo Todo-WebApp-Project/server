@@ -118,7 +118,7 @@ public class FollowResource {
 	}
 
 	/*
-	 * userID에 대한 팔로잉 수와 팔로워 수 조회
+	 * userID에 대한 팔로잉 수와 팔로워 수 조회 (API없고 시험삼아 만들었습니다)
 	 */
     @GetMapping("/follow/count")
     public ResponseEntity<?> getFollowCounts(@RequestParam String userId) {
