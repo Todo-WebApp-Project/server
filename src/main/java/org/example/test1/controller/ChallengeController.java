@@ -81,14 +81,24 @@ public class ChallengeController {
     @GetMapping("/challenge")
     public ResponseEntity<ChallengePagingResponse> retrieveChallenges(
             // page와 size를 파라미터로 받음 (page 디폴트값: 1, size 디폴트값: 10)
-    		@RequestParam(defaultValue = "1") int page, // 
-            @RequestParam(defaultValue = "10") int size) {
-        
+    		@RequestParam(defaultValue = "1") int page, 
+    		@RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Integer category) {
+        	
     	// 페이지네이션 정보 설정
     	Pageable pageable = PageRequest.of(page - 1, size); // JPA는 페이지를 0부터 시작하므로 page - 1 필요함
     	
-    	// 페이지네이션된 챌린지 목록 조회
-        Page<Challenge> challengePage = challengeRepository.findAll(pageable);
+    	// 페이지네이션된 챌린지 목록 선언
+        Page<Challenge> challengePage;
+        
+        if (category != null) {
+        	// 카테고리가 지정된 경우, 해당 카테고리의 챌린지 조회
+        	challengePage = challengeRepository.findByCategory(category, pageable);
+        }
+        else {
+        	// 카테고리가 지정되지 않은 경우, 전체 챌린지 조회
+        	challengePage = challengeRepository.findAll(pageable);
+        }
         
         // 조회된 데이터를 바탕으로 응답 DTO 객체 생성
         ChallengePagingResponse response = new ChallengePagingResponse();
@@ -103,43 +113,6 @@ public class ChallengeController {
     }
 
 
-    
-//    // 카테고리별 챌린지 조회
-//    @GetMapping("/challenges")
-//    public ResponseEntity<Map<String, Object>> retrieveChallengesByCategory(
-//        @RequestParam Integer category,
-//        @PageableDefault(size = 10) Pageable pageable) {
-//
-//        Page<Challenge> challenges = challengeRepository.findByCategory(category, pageable);
-//
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("page", challenges.getNumber());
-//        response.put("size", challenges.getSize());
-//        response.put("totalPages", challenges.getTotalPages());
-//        response.put("totalCount", challenges.getTotalElements());
-//        response.put("challenges", challenges.getContent());
-//
-//        return ResponseEntity.ok(response);
-//    }
-//
-//    // 검색어로 챌린지 조회
-//    @GetMapping("/challenges")
-//    public ResponseEntity<Map<String, Object>> retrieveChallengesBySearch(
-//        @RequestParam String search,
-//        @PageableDefault(size = 10) Pageable pageable) {
-//
-//        Page<Challenge> challenges = challengeRepository.findByTagNameContaining(search, pageable);
-//
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("page", challenges.getNumber());
-//        response.put("size", challenges.getSize());
-//        response.put("totalPages", challenges.getTotalPages());
-//        response.put("totalCount", challenges.getTotalElements());
-//        response.put("challenges", challenges.getContent());
-//
-//        return ResponseEntity.ok(response);
-//    }
-//    
     //1-3.챌린지 수정
     @PutMapping("/challenge/{noTag}")
     public ResponseEntity<String> updateChallenge(@PathVariable Long noTag, @RequestBody UpdateTag newChall) {
