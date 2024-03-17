@@ -36,6 +36,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 public class ChallengeController {
@@ -44,6 +46,8 @@ public class ChallengeController {
     private DiaryRepository diaryRepository;
 
     private BlacklistRepository blacklistRepository;
+    private static final Logger logger = LoggerFactory.getLogger(ChallengeController.class);
+
 
     public ChallengeController(ChallengeRepository challengeRepository, ChallengerRepository challengerRepository, DiaryRepository diaryRepository, BlacklistRepository blacklistRepository) {
         this.challengeRepository = challengeRepository;
@@ -83,7 +87,8 @@ public class ChallengeController {
             // page와 size를 파라미터로 받음 (page 디폴트값: 1, size 디폴트값: 10)
     		@RequestParam(defaultValue = "1") int page, 
     		@RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) Integer category) {
+    		@RequestParam(required = false) Integer category,
+            @RequestParam(required = false) String search) {
         	
     	// 페이지네이션 정보 설정
     	Pageable pageable = PageRequest.of(page - 1, size); // JPA는 페이지를 0부터 시작하므로 page - 1 필요함
@@ -91,12 +96,18 @@ public class ChallengeController {
     	// 페이지네이션된 챌린지 목록 선언
         Page<Challenge> challengePage;
         
-        if (category != null) {
+        if (search != null && !search.trim().isEmpty()) {
+        	// 검색어가 있는 경우, 검색어로 챌린지 조회
+        	logger.info("Received search query: {}", search);
+        	challengePage = challengeRepository.findByKeyword(search, pageable);
+        	//challengePage = challengeRepository.findByTagNameContainingOrTagDescContaining(search, search, pageable);
+        }
+        else if (category != null) {
         	// 카테고리가 지정된 경우, 해당 카테고리의 챌린지 조회
         	challengePage = challengeRepository.findByCategory(category, pageable);
         }
         else {
-        	// 카테고리가 지정되지 않은 경우, 전체 챌린지 조회
+        	// 카테고리나 검색어가 없는 경우, 전체 챌린지 조회
         	challengePage = challengeRepository.findAll(pageable);
         }
         
