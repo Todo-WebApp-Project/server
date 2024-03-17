@@ -1,5 +1,6 @@
 package com.example.demo.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.Date;
 
@@ -7,7 +8,7 @@ import java.util.Date;
 public class Todo {
     @Id
     @Column(name="todo_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long todoId;
 
     private String userId;
@@ -23,6 +24,10 @@ public class Todo {
 
     @Column(name="todo_date")
     private Date todoDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    private User user;
 
     public Long getTodoId() {
         return todoId;

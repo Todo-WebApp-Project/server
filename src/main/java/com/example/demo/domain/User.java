@@ -137,6 +137,9 @@ public class User {
         this.userMsg = userMsg;
     }
 
+    public User() {
+    }
+
     public User(String userId, String email, String password,
                 @Size(min = 2, message = "Name should have atleast 2 characters") String username, Integer level,
                 Integer auth, String status_msg, List<Todo> todos, List<Schedule> schedules,

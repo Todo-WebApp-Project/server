@@ -49,10 +49,10 @@ public class UserController {
      * 전체 사용자 조회
      */
     // GET /users
-    @GetMapping("/users")
-    public List<User> retrieveAllUsers(){
-        return userRepository.findAll();
-    }
+//    @GetMapping("/users")
+//    public List<User> retrieveAllUsers(){
+//        return userRepository.findAll();
+//    }
 
     /*
      * 회원가입
@@ -135,7 +135,6 @@ public class UserController {
 
         return entityModel;
     }
-
 
     /*
      * 회원정보 수정
