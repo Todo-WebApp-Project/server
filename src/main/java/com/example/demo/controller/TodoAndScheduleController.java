@@ -43,40 +43,11 @@ public class TodoAndScheduleController {
 
 	private ScheduleRepository schRepository;
 
-
 	public TodoAndScheduleController(UserRepository userRepository, TodoRepository todoRepository, ScheduleRepository schRepository ) {
 		this.userRepository = userRepository;
 		this.todoRepository = todoRepository;
 		this.schRepository = schRepository;
 	}
-
-	@GetMapping("/users") // find User all
-	public List<User> retrieveAllUsers() {
-		return userRepository.findAll();
-	}
-
-	
-	//http://localhost:8080/users
-	
-	//EntityModel
-	//WebMvcLinkBuilder
-	// find one
-	@GetMapping("/users/{id}")
-	public EntityModel<User> retrieveUser(@PathVariable String id) {
-		Optional<User> user = userRepository.findById(id);
-		
-		if(user.isEmpty())
-			throw new UserNotFoundException("id:"+id);
-		
-		EntityModel<User> entityModel = EntityModel.of(user.get());
-		
-		WebMvcLinkBuilder link =  linkTo(methodOn(this.getClass()).retrieveAllUsers());
-		entityModel.add(link.withRel("all-users"));
-		
-		return entityModel;
-	}
-	
-	
 
 	// (2)Todo
 	//one User -> all posting
