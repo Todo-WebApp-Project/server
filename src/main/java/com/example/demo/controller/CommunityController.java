@@ -1,20 +1,34 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.demo.Jwt.JwtFunc;
 import com.example.demo.domain.Follow;
 import com.example.demo.domain.Like;
 import com.example.demo.domain.Post;
+import com.example.demo.domain.Todo;
 import com.example.demo.domain.User;
 import com.example.demo.domain.ck.FollowId;
 import com.example.demo.domain.ck.LikeId;
-import com.example.demo.repository.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.example.demo.repository.FollowRepository;
+import com.example.demo.repository.LikeRepository;
+import com.example.demo.repository.PostRepository;
+import com.example.demo.repository.TodoRepository;
+import com.example.demo.repository.UserRepository;
 
 @RestController
 public class CommunityController {
@@ -23,15 +37,17 @@ public class CommunityController {
     private PostRepository postRepository;
     private FollowRepository followRepository;
     private LikeRepository likeRepository;
+    private TodoRepository todoRepository;
 
-    public CommunityController(PostRepository postRepository, UserRepository userRepository, FollowRepository followRepository, LikeRepository likeRepository) {
+    public CommunityController(PostRepository postRepository, UserRepository userRepository, FollowRepository followRepository, LikeRepository likeRepository, TodoRepository todoRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.followRepository = followRepository;
         this.likeRepository = likeRepository;
+        this.todoRepository = todoRepository;
     }
 
-    //1-1. post 조회()
+    //1-1. post 조회(O)
     //2-1. 팔로우 하기(O)
     //2-2. 팔로우 취소(O)
     //2-3. 팔로워 조회(A를 팔로우 하는 사람들 목록 조회)(O)
@@ -39,8 +55,46 @@ public class CommunityController {
     //3-1. 좋아요 하기(O)
     //3-2. 좋아요 취소(O)
 
-    //****** 1-1. post 조회 ******
-
+  //****** 1-1. post 조회 ******
+    @GetMapping("/get_posts")
+    public ResponseEntity<List<Map<String,Object>>> getPosts(){
+    	// 모든 사용자를 조회하여 공개 계정만 필터링한다.
+        List<User> publicUsers = userRepository.findAll().stream()
+            .filter(user -> user.getAuth() == 1) // auth가 0인, 즉 공개 계정만
+            .collect(Collectors.toList()); //
+        
+        List<Map<String, Object>> postsWithTodos = new ArrayList<>(); // 최종적으로 반환할 포스트와 투두 정보를 담을 리스트
+        
+     // 공개 계정에 대해 반복하여 각 사용자의 포스트와 관련 투두 정보를 가져옴
+        for (User user : publicUsers) {
+            List<Post> userPosts = postRepository.findByUserId(user.getUserId()); 
+            for (Post post : userPosts) {
+                Map<String, Object> postWithTodos = new HashMap<>();
+                // 포스트의 ID, 사용자 이름, 그리고 포스트 날짜를 맵에 추가
+                postWithTodos.put("postId", post.getPostId());
+                postWithTodos.put("userName", user.getUsername());
+                postWithTodos.put("todoDate", post.getPostDate());
+                
+             // 해당 포스트와 관련된 투두 항목들을 조회한다. 여기서 share가 1인 Todo만 필터링
+                List<Todo> todos = todoRepository.findByUserIdAndTodoDate(user.getUserId(), post.getPostDate())
+                    .stream()
+                    .filter(todo -> todo.getShare() == 1) // 공개된 Todo만 필터링
+                    .collect(Collectors.toList());
+                
+                // 조회된 투두 항목들을 맵에 tasks키 추가해서 할 일이랑 완료여부를 넣기
+                postWithTodos.put("tasks", todos.stream().map(todo -> Map.of(
+                        "task", todo.getTask(),
+                        "finish", todo.getFinish()
+                )).collect(Collectors.toList()));
+                
+                
+                // 최종적으로 구성된 포스트와 투두 정보를 반환 리스트에 추가
+                postsWithTodos.add(postWithTodos);
+            }
+        }
+        return ResponseEntity.ok(postsWithTodos);
+    }
+    
 
     //****** 2-1. 팔로우 하기 ******
     @PatchMapping("/follow")
