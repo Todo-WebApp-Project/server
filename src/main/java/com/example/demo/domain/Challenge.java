@@ -12,6 +12,8 @@ public class Challenge {
     @Column(name="tag_name")
     private String tagName;
 
+    private Integer category; // 챌린지 도메인에 '카테고리' 속성이 없어서 추가함
+    
     @Column(name="tag_desc", columnDefinition="TEXT")
     private String tagDesc;
 
@@ -20,54 +22,63 @@ public class Challenge {
 
     private int participants;
 
-    public Long getNoTag() {
-        return noTag;
-    }
+	public Long getNoTag() {
+		return noTag;
+	}
 
-    public void setNoTag(Long noTag) {
-        this.noTag = noTag;
-    }
+	public void setNoTag(Long noTag) {
+		this.noTag = noTag;
+	}
 
-    public String getTagName() {
-        return tagName;
-    }
+	public String getTagName() {
+		return tagName;
+	}
 
-    public void setTagName(String tagName) {
-        this.tagName = tagName;
-    }
+	public void setTagName(String tagName) {
+		this.tagName = tagName;
+	}
 
-    public String getTagDesc() {
-        return tagDesc;
-    }
+	public Integer getCategory() {
+		return category;
+	}
 
-    public void setTagDesc(String tagDesc) {
-        this.tagDesc = tagDesc;
-    }
+	public void setCategory(Integer category) {
+		this.category = category;
+	}
 
-    public String getTagImg() {
-        return tagImg;
-    }
+	public String getTagDesc() {
+		return tagDesc;
+	}
 
-    public void setTagImg(String tagImg) {
-        this.tagImg = tagImg;
-    }
+	public void setTagDesc(String tagDesc) {
+		this.tagDesc = tagDesc;
+	}
 
-    public int getParticipants() {
-        return participants;
-    }
+	public String getTagImg() {
+		return tagImg;
+	}
 
-    public void setParticipants(int participants) {
-        this.participants = participants;
-    }
+	public void setTagImg(String tagImg) {
+		this.tagImg = tagImg;
+	}
 
-    @Override
-    public String toString() {
-        return "Challenge{" +
-                "noTag=" + noTag +
-                ", tagName='" + tagName + '\'' +
-                ", tagDesc='" + tagDesc + '\'' +
-                ", tagImg='" + tagImg + '\'' +
-                ", participants=" + participants +
-                '}';
-    }
+	public int getParticipants() {
+		return participants;
+	}
+
+	public void setParticipants(int participants) {
+		this.participants = participants;
+	}
+
+	@Override
+	public String toString() {
+		return "Challenge [noTag=" + noTag + ", "
+				+ "tagName=" + tagName 
+				+ ", category=" + category 
+				+ ", tagDesc=" + tagDesc
+				+ ", tagImg=" + tagImg 
+				+ ", participants=" + participants + "]";
+	}
+
+    
 }

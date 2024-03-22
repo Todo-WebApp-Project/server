@@ -1,26 +1,42 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.Challenge;
-import com.example.demo.domain.Challenger;
-import com.example.demo.domain.Diary;
-import com.example.demo.dto.UpdateTag;
-import com.example.demo.exception.InvalidJwtTokenException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.demo.Jwt.Blacklist;
 import com.example.demo.Jwt.BlacklistRepository;
 import com.example.demo.Jwt.JwtFunc;
-import com.example.demo.domain.*;
+import com.example.demo.domain.Challenge;
+import com.example.demo.domain.Challenger;
+import com.example.demo.domain.Diary;
 import com.example.demo.domain.ck.ChallengerId;
+import com.example.demo.dto.ChallengePagingResponse;
 import com.example.demo.dto.UpdateDiary;
+import com.example.demo.dto.UpdateTag;
+import com.example.demo.exception.InvalidJwtTokenException;
 import com.example.demo.repository.ChallengeRepository;
 import com.example.demo.repository.ChallengerRepository;
 import com.example.demo.repository.DiaryRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.*;
 
 @RestController
 public class ChallengeController {
@@ -38,7 +54,7 @@ public class ChallengeController {
     }
 
     //1-1.챌린지 생성(O)
-    //1-2.챌린지 조회(O)
+    //1-2.챌린지 조회(O)-Pagination(O)
     //1-3.챌린지 수정(O)
     //1-4.챌린지 삭제(수정필요)
 
@@ -64,8 +80,27 @@ public class ChallengeController {
 
     //1-2.챌린지 조회
     @GetMapping("/challenge")
-    public List<Challenge> retrieveChallenge() {
-        return challengeRepository.findAll();
+    public ResponseEntity<ChallengePagingResponse> retrieveChallenges(
+            // page와 size를 파라미터로 받음 (page 디폴트값: 1, size 디폴트값: 10)
+    		@RequestParam(defaultValue = "1") int page, 
+    		@RequestParam(defaultValue = "10") int size){
+        	
+    	// 페이지네이션 정보 설정
+    	Pageable pageable = PageRequest.of(page - 1, size); // JPA는 페이지를 0부터 시작하므로 page - 1 필요함
+    	
+    	// 페이지네이션된 챌린지 목록 조회
+        Page<Challenge> challengePage = challengeRepository.findAll(pageable);
+        
+        // 조회된 데이터를 바탕으로 응답 DTO 객체 생성
+        ChallengePagingResponse response = new ChallengePagingResponse();
+        response.setPage(page); // 현재 페이지 번호
+        response.setSize(size); // 페이지당 아이템 수
+        response.setTotalPages(challengePage.getTotalPages()); // 총 페이지 수
+        response.setTotalCount(challengePage.getTotalElements()); // 총 아이템 수
+        response.setChallenges(challengePage.getContent()); // 현재 페이지의 챌린지 목록
+
+        // DTO 반환
+        return ResponseEntity.ok(response);
     }
 
     //1-3.챌린지 수정
