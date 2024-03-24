@@ -1,7 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.CalendarListItem;
-import com.example.demo.domain.CalendarListResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;

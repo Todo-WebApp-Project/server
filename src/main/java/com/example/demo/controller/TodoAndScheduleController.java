@@ -61,27 +61,7 @@ public class TodoAndScheduleController {
 		return user.get().getTodos();
 
 	}
-	// delete user
-	@DeleteMapping("/users/{id}")
-	public void deleteUser(@PathVariable String id) {
-		userRepository.deleteById(id);
-	}
-	
 
-	
-	//Create User
-	@PostMapping("/users")
-	public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-		
-		User savedUser = userRepository.save(user);
-
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-						.path("/{id}")
-						.buildAndExpand(savedUser.getUserId())
-						.toUri();   
-		
-		return ResponseEntity.created(location).build();
-	}
 
 	//create Todo
 	// 

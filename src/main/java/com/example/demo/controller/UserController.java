@@ -26,14 +26,15 @@ public class UserController {
     private UserRepository userRepository;
 
     private BlacklistRepository blacklistRepository;
-//    private TodoRepository todoRepository;
-//    private ScheduleRepository scheduleRepository;
-//    private PerformRepository performRepository;
     private FollowRepository followRepository;
     private LikeRepository likeRepository;
     private PostRepository postRepository;
     private ChallengerRepository challengerRepository;
     private DiaryRepository diaryRepository;
+
+//    private TodoRepository todoRepository;
+//    private ScheduleRepository scheduleRepository;
+//    private PerformanceRepository performanceRepository;
 
     public UserController(UserRepository userRepository, FollowRepository followRepository, LikeRepository likeRepository, PostRepository postRepository, ChallengerRepository challengerRepository, DiaryRepository diaryRepository, BlacklistRepository blacklistRepository) {
         this.userRepository = userRepository;
@@ -187,7 +188,7 @@ public class UserController {
     }
 
     /*
-     * 회원 탈퇴(유저와 관련된 정보 모두 삭제해야 함)(미완)
+     * 회원 탈퇴(유저와 관련된 정보 모두 삭제해야 함)(완)
      */
     // DELETE /delete_account
     @DeleteMapping("/delete_account")
@@ -200,17 +201,15 @@ public class UserController {
 
         //DB에서 모든 정보 삭제
         userRepository.deleteById(user_id);
-//        todoRepository.deleteByUserId(user_id);
-//        scheduleRepository.deleteByUserId(user_id);
-//        performRepository.deleteById(user_id);
-        followRepository.deleteByFollowing(user_id);
-        followRepository.deleteByFollowed(user_id);
-//        followRepository.deleteByFollowed(user_id);
+        followRepository.deleteWithQuery(user_id);
+        postRepository.deleteAllByUserId(user_id);
+        likeRepository.deleteAllByUserId(user_id);
+        challengerRepository.deleteAllByUserId(user_id);
+        diaryRepository.deleteAllByUserId(user_id);
 
-        likeRepository.deleteByUserId(user_id);
-        postRepository.deleteByUserId(user_id);
-        challengerRepository.deleteByUserId(user_id);
-        diaryRepository.deleteByUserId(user_id);
+//        todoRepository.deleteAllByUserId(user_id);
+//        scheduleRepository.deleteAllByUserId(user_id);
+//        performRepository.deleteAllByUserId(user_id);
 
         return ResponseEntity.ok("회원탈퇴 되셨습니다.");
     }

@@ -77,8 +77,4 @@ public class GoogleCalendarController {
         return "success";
     }
 
-
-
-
-
 }
