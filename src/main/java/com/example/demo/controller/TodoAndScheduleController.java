@@ -1,27 +1,17 @@
 package com.example.demo.controller;
 
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.example.demo.Jwt.JwtFunc;
 import com.example.demo.repository.*;
 import com.example.demo.domain.*;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.example.demo.exception.ScheduleNotFoundException;
@@ -43,6 +33,8 @@ public class TodoAndScheduleController {
 
 	private ScheduleRepository schRepository;
 
+	JwtFunc jwt = new JwtFunc();
+
 	public TodoAndScheduleController(UserRepository userRepository, TodoRepository todoRepository, ScheduleRepository schRepository ) {
 		this.userRepository = userRepository;
 		this.todoRepository = todoRepository;
@@ -51,20 +43,21 @@ public class TodoAndScheduleController {
 
 	// (2)Todo
 	//one User -> all posting
-	@GetMapping("/users/{id}/todos")
-	public List<Todo> retrievePostsForUser(@PathVariable String id) {
-		Optional<User> user = userRepository.findById(id);
-		
+	@GetMapping("/users/todos")
+	public List<Todo> retrievePostsForUser(@RequestHeader("Authorization") String token) {
+
+		JwtFunc jwt = new JwtFunc();
+		Optional<User> user = userRepository.findById(jwt.unpackJWT(token));
+
 		if(user.isEmpty())
-			throw new UserNotFoundException("id:"+id);
+			throw new UserNotFoundException("id Not Found");
 		
 		return user.get().getTodos();
-
 	}
 	// delete user
-	@DeleteMapping("/users/{id}")
-	public void deleteUser(@PathVariable String id) {
-		userRepository.deleteById(id);
+	@DeleteMapping("/users")
+	public void deleteUser(@RequestHeader("Authorization") String token) {
+		userRepository.deleteById(jwt.unpackJWT(token));
 	}
 	
 
@@ -85,31 +78,33 @@ public class TodoAndScheduleController {
 
 	//create Todo
 	// 
-	@PostMapping("/users/{id}/todos")
-	public ResponseEntity<Object> createTodoForUser(@PathVariable String id, @Valid @RequestBody Todo todo) {
-		Optional<User> user = userRepository.findById(id);
-		
+	@PostMapping("/users/todos")
+	public ResponseEntity<Object> createTodoForUser(@RequestHeader("Authorization") String token, @Valid @RequestBody Todo todo) {
+
+		Optional<User> user = userRepository.findById(jwt.unpackJWT(token));
+
 		if(user.isEmpty())
-			throw new UserNotFoundException("id:"+id);
+			throw new UserNotFoundException("id is not found");
 
 		Todo savedTodo = todoRepository.save(todo);
 		
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-				.path("/{id}")
+				.path("/"+user.get().getUserId())
 				.buildAndExpand(savedTodo.getUserId())
 				.toUri();   
 
 		return ResponseEntity.created(location).build();
-
 	}
 	
 	//delete Todo
-	@DeleteMapping("/users/{userId}/todos/{todoId}")
-	public ResponseEntity<?> deleteTodo(@PathVariable String userId, @PathVariable int todoId) {
-	    //find user_id
-		Optional<User> userOptional = userRepository.findById(userId);
-	    if (userOptional.isEmpty()) {
-	        throw new UserNotFoundException("id:" + userId);
+	@DeleteMapping("/users/todos/{todoId}")
+	public ResponseEntity<?> deleteTodo(@RequestHeader("Authorization") String token, @PathVariable int todoId) {
+
+		JwtFunc jwt = new JwtFunc();
+		Optional<User> userOptional = userRepository.findById(jwt.unpackJWT(token));
+
+		if (userOptional.isEmpty()) {
+	        throw new UserNotFoundException("id is not found");
 	    }
 	    //find to exist todo_id
 	    Optional<Todo> todoOptional = todoRepository.findById(todoId);
@@ -118,7 +113,7 @@ public class TodoAndScheduleController {
 	    }
 	    
 	    Todo todo = todoOptional.get();
-	    if (!Objects.equals(todo.getUserId(), userId)) {
+	    if (!Objects.equals(todo.getUserId(), userOptional.get().getUserId())) {
 	        // todo가 해당 유저에 속하지 않는 경우에 대한 예외 처리
 	        throw new TodoNotFoundException("id:" + todoId);
 	    }
@@ -129,12 +124,14 @@ public class TodoAndScheduleController {
 	}
 	
 	//Update Todo
-	@PutMapping("/users/{userId}/todos/{todoId}")
-	public ResponseEntity<?> updateTodo(@PathVariable String userId, @PathVariable int todoId, @Valid @RequestBody Todo updatedTodo) {
-	    //Exception
-		Optional<User> userOptional = userRepository.findById(userId);
+	@PutMapping("/users/todos/{todoId}")
+	public ResponseEntity<?> updateTodo(@RequestHeader("Authorization") String token, @PathVariable int todoId, @Valid @RequestBody Todo updatedTodo) {
+
+		JwtFunc jwt = new JwtFunc();
+		Optional<User> userOptional = userRepository.findById(jwt.unpackJWT(token));
+
 	    if (userOptional.isEmpty()) {
-	        throw new UserNotFoundException("id:" + userId);
+	        throw new UserNotFoundException("id is not found");
 	    }
 	  
 	    Optional<Todo> todoOptional = todoRepository.findById(todoId);
@@ -143,7 +140,7 @@ public class TodoAndScheduleController {
 	    }
 	    
 	    Todo todo = todoOptional.get();
-	    if (!Objects.equals(todo.getUserId(), userId)) {
+	    if (!Objects.equals(todo.getUserId(), userOptional.get().getUserId())) {
 	        
 	        throw new TodoNotFoundException("id:" + todoId);
 	    }
@@ -159,8 +156,8 @@ public class TodoAndScheduleController {
 	}
 
 	// todo finished T/F function
-	@PatchMapping("/users/{userId}/todos/{todoId}/todoChecking")
-	public ResponseEntity<?> togglePostFinished(@PathVariable int userId,@PathVariable int todoId) {
+	@PatchMapping("/users/todos/{todoId}/todoChecking")
+	public ResponseEntity<?> togglePostFinished(@RequestHeader("Authorization") String token,@PathVariable int todoId) {
 	    Optional<Todo> todoOptional = todoRepository.findById(todoId);
 	    
 	    if(todoOptional.isEmpty()) {
@@ -188,38 +185,38 @@ public class TodoAndScheduleController {
 	*/
 
 	//one User -> all schedules
-	@GetMapping("/users/{id}/schedules")
-	public List<Schedule> retrieveSchForUser(@PathVariable("id") String id) {
-		try {
-			Optional<User> user = userRepository.findById(id);
+	@GetMapping("/users/schedules")
+	public List<Schedule> retrieveSchForUser(@RequestHeader("Authorization") String token) {
+		Optional<User> user = userRepository.findById(jwt.unpackJWT(token));
 
+		try {
 			if (user.isEmpty()) {
-				throw new UserNotFoundException("User not found with id: " + id);
+				throw new UserNotFoundException("User not found");
 			}
 			return user.get().getSchedules();
 		} catch (Exception e) {
-			throw new RuntimeException("Error retrieving schedules for user with id: " + id, e);
+			throw new RuntimeException("Error retrieving schedules for user with id: " + user.get().getUserId(), e);
 		}
 	}
 
 
 	//create schedules
-	@PostMapping("/users/{id}/schedules")
-	public ResponseEntity<Object> createSchForUser(@PathVariable String id, @Valid @RequestBody Schedule schedule) {
+	@PostMapping("/users/schedules")
+	public ResponseEntity<Object> createSchForUser( @RequestHeader("Authorization") String token,@Valid @RequestBody Schedule schedule) {
 
-		Optional<User> user = userRepository.findById(id);
+		Optional<User> user = userRepository.findById(jwt.unpackJWT(token));
 
 		System.out.println("Empty: " + user.isEmpty());
 
 		if(user.isEmpty())
-			throw new UserNotFoundException("id:"+id);
+			throw new UserNotFoundException("id is not found");
 
 		schedule.setUser(user.get());
 
 		Schedule savedSch = schRepository.save(schedule);
 
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-				.path("/{id}")
+				.path("/"+user.get().getUserId())
 				.buildAndExpand(savedSch.getId())
 				.toUri();
 
@@ -228,12 +225,12 @@ public class TodoAndScheduleController {
 	}
 
 	//delete Schedule
-	@DeleteMapping("/users/{userId}/schedules/{scheduleId}")
-	public ResponseEntity<?> deleteSch(@PathVariable String userId, @PathVariable int scheduleId) {
+	@DeleteMapping("/users/schedules/{scheduleId}")
+	public ResponseEntity<?> deleteSch(@RequestHeader("Authorization") String token,@PathVariable int scheduleId) {
 		//find user_id
-		Optional<User> userOptional = userRepository.findById(userId);
+		Optional<User> userOptional = userRepository.findById(jwt.unpackJWT(token));
 		if (userOptional.isEmpty()) {
-			throw new UserNotFoundException("id:" + userId);
+			throw new UserNotFoundException("id is not found");
 		}
 		//find to exist sche_id
 		Optional<Schedule> schOptional = schRepository.findById(scheduleId);
@@ -242,7 +239,7 @@ public class TodoAndScheduleController {
 		}
 
 		Schedule schedule = schOptional.get();
-		if (!Objects.equals(schedule.getId(), userId)) {
+		if (!Objects.equals(schedule.getId().toString(), userOptional.get().getUserId())) {
 			// schedule가 해당 유저에 속하지 않는 경우에 대한 예외 처리
 			throw new ScheduleNotFoundException("id:" + scheduleId);
 		}
@@ -253,13 +250,13 @@ public class TodoAndScheduleController {
 	}
 
 	//Update Schedules
-	@PutMapping("/users/{userId}/schedules/{scheduleId}")
-	public ResponseEntity<?> updateSch(@PathVariable String userId, @PathVariable int scheduleId,
+	@PutMapping("/users/schedules/{scheduleId}")
+	public ResponseEntity<?> updateSch(@RequestHeader("Authorization") String token, @PathVariable int scheduleId,
 									   @Valid @RequestBody Schedule updatedSch) {
 		//Exception
-		Optional<User> userOptional = userRepository.findById(userId);
+		Optional<User> userOptional = userRepository.findById(jwt.unpackJWT(token));
 		if (userOptional.isEmpty()) {
-			throw new UserNotFoundException("id:" + userId);
+			throw new UserNotFoundException("id is not found");
 		}
 
 		Optional<Schedule> schOptional = schRepository.findById(scheduleId);
@@ -268,7 +265,7 @@ public class TodoAndScheduleController {
 		}
 
 		Schedule schedule = schOptional.get();
-		if (!Objects.equals(schedule.getUser().getUserId(), userId)) {
+		if (!Objects.equals(schedule.getUser().getUserId(), userOptional.get().getUserId())) {
 			throw new ScheduleNotFoundException("id:" + scheduleId);
 		}
 
