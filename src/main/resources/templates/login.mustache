@@ -1,0 +1,25 @@
+<html>
+<head>
+<title>로그인 페이지</title>
+<meta charset="UTF-8">
+</head>
+<body>
+<h1>로그인 페이지</h1>
+<hr/>
+<!-- 시큐리티는 x-www-form-url-encoded 타입만 인식 -->
+<form action="/login" method="post">
+	<input type="text" name="username" />
+	<input type="password" name="password" />
+	<button>로그인</button>
+</form>
+<a href="/join">회원가입을 아직 안 하셨나요?</a>
+<br />
+
+	<h1>Social Login</h1>
+	<br />
+	<a href="/oauth2/authorization/google" > 
+	<button>Google Login</button>
+	</a>
+	<br />
+</body>
+</html>

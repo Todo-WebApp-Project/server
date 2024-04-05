@@ -1,25 +1,40 @@
 package com.example.demo.controller;
 
-import com.example.demo.Jwt.Blacklist;
-import com.example.demo.dto.UserInfoResponse;
-import com.example.demo.exception.InvalidJwtTokenException;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.repository.*;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import com.example.demo.Jwt.BlacklistRepository;
-import com.example.demo.Jwt.JwtFunc;
-import com.example.demo.domain.User;
-import com.example.demo.dto.PasswordUpdateRequest;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.Jwt.Blacklist;
+import com.example.demo.Jwt.BlacklistRepository;
+import com.example.demo.Jwt.JwtFunc;
+import com.example.demo.domain.User;
+import com.example.demo.dto.PasswordUpdateRequest;
+import com.example.demo.dto.UserInfoResponse;
+import com.example.demo.exception.InvalidJwtTokenException;
+import com.example.demo.repository.ChallengerRepository;
+import com.example.demo.repository.DiaryRepository;
+import com.example.demo.repository.FollowRepository;
+import com.example.demo.repository.LikeRepository;
+import com.example.demo.repository.PostRepository;
+import com.example.demo.repository.UserRepository;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 @RestController
 public class UserController {
@@ -44,6 +59,9 @@ public class UserController {
         this.diaryRepository = diaryRepository;
         this.blacklistRepository = blacklistRepository;
     }
+    
+//    @Autowired
+//	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     /*
      * 전체 사용자 조회
@@ -63,11 +81,16 @@ public class UserController {
 
         user.setAuth(0);	//기본값 : 0(비공개)
         user.setLevel(1);	//기본값 : 1(lv.)
-
+        // 비밀번호 암호화->추후 리펙토링
+// 		String rawPassword = user.getPassword(); // 원래 비밀번호
+// 		String encPassword = bCryptPasswordEncoder.encode(rawPassword); // 암호화
+// 		user.setPassword(encPassword);
+ 		
         userRepository.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
+    
+  
     /*
      * 로그인(토큰 발급 추가 완)
      */
