@@ -4,8 +4,15 @@ import java.util.List;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.validation.constraints.Size;
+import lombok.Builder;
 
 @Entity(name="users")
 public class User {
@@ -140,6 +147,7 @@ public class User {
     public User() {
     }
 
+    @Builder
     public User(String userId, String email, String password,
                 @Size(min = 2, message = "Name should have atleast 2 characters") String username, Integer level,
                 Integer auth, String status_msg, List<Todo> todos, List<Schedule> schedules,
@@ -170,5 +178,8 @@ public class User {
                 ", userMsg='" + userMsg + '\'' +
                 '}';
     }
+
+	
+	
 }
 
