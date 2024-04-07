@@ -1,7 +1,7 @@
 ![header](https://capsule-render.vercel.app/api?type=waving&color=auto&height=300&section=header&text=Mingle&fontSize=90)
 
 # 프로젝트 소개
-
+ Mingle - 커뮤니티 중심의 Todo/ Challenge 공유 서비스
 
 ![mingle_icon](https://github.com/Todo-WebApp-Project/server/assets/99193939/27369ead-2322-4927-9bc5-4d1b95caf0a0)
 
@@ -61,7 +61,7 @@ npm
 	[![Slack](https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white)]()
 	[![Discord](https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)]()
 	[![Jira](https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=jira&logoColor=white)]()
-	[![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)]([https://rainy-journey-3a1.notion](https://rainy-journey-3a1.notion.site/DOTORY-44cb97d1957a403bbe7970625783811d?pvs=4))
+	[![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://rainy-journey-3a1.notion.site/DOTORY-44cb97d1957a403bbe7970625783811d?pvs=4)
 </div>
 
 
