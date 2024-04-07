@@ -58,10 +58,10 @@ npm
 
 ## Communication
 <div align="center">
-	[![Slack](https://img.shields.io/badge/slack-4A154B?style=for-the-		badge&logo=Slack&logoColor=white)](https://your-slack-link)
+	[![Slack](https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white)](https://your-slack-link)
 	[![Discord](https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://your-discord-link)
 	[![Jira](https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=jira&logoColor=white)](https://your-jira-link)
-	[![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://rainy-journey-3a1.notion.site/DOTORY-	44cb97d1957a403bbe7970625783811d?pvs=4)
+	[![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)](https://rainy-journey-3a1.notion.site/DOTORY-44cb97d1957a403bbe7970625783811d?pvs=4)
 </div>
 
 
