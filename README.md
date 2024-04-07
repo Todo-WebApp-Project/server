@@ -1,7 +1,8 @@
-![header](https://capsule-render.vercel.app/api?type=waving&color=auto&height=300&section=header&text= Mingle&fontSize=90)
+![header](https://capsule-render.vercel.app/api?type=waving&color=auto&height=300&section=header&text=Mingle&fontSize=90)
+
 # 프로젝트 소개
 
----
+
 ![mingle_icon](https://github.com/Todo-WebApp-Project/server/assets/99193939/27369ead-2322-4927-9bc5-4d1b95caf0a0)
 
 - Mingle(”섞이다”)은  할 일 관리와 하루 챌린지의 독특한 조화를 통해 개인 성장과 발전을 촉진하는 커뮤니티 중심 플랫폼입니다.
@@ -57,24 +58,24 @@ npm
 
 ## Communication
 <div align="center">
-	[![Slack](https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white)]
-	[![Discord](https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)]
-	[![Jira](https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=jira&logoColor=white)]
+	[![Slack](https://img.shields.io/badge/slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white)]()
+	[![Discord](https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)]()
+	[![Jira](https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=jira&logoColor=white)]()
 	[![Notion](https://img.shields.io/badge/notion-000000?style=for-the-badge&logo=notion&logoColor=white)]([https://rainy-journey-3a1.notion](https://rainy-journey-3a1.notion.site/DOTORY-44cb97d1957a403bbe7970625783811d?pvs=4))
 </div>
 
 
 # 아키텍쳐
----
+
 - 추후 추가 예정
 #  DB
----
+
 - ERD
   ![mingle_DB](https://github.com/Todo-WebApp-Project/server/assets/99193939/8ffcd370-30dc-4509-9722-14e1b085f727)
 
 
 # 기능
----
+
 ## 유저
 
 - 회원가입
@@ -123,7 +124,7 @@ npm
   
  
 # 역활 
----
+
 ## 김다은
 
 - JWT를 사용하여 로그인시 access token 발급과 요청 시 인증 수단으로 이용
@@ -150,7 +151,7 @@ npm
 
 
 ## 개발기간
----
+
 - 백엔드/ 프론트 엔드 개발 : 1/10~
 - 배포 :
 - 리팩토링 :
