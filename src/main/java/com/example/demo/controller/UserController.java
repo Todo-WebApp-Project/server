@@ -44,19 +44,19 @@ public class UserController {
 //    private TodoRepository todoRepository;
 //    private ScheduleRepository scheduleRepository;
 //    private PerformRepository performRepository;
-    private FollowRepository followRepository;
-    private LikeRepository likeRepository;
-    private PostRepository postRepository;
-    private ChallengerRepository challengerRepository;
-    private DiaryRepository diaryRepository;
+//    private FollowRepository followRepository;
+//    private LikeRepository likeRepository;
+//    private PostRepository postRepository;
+//    private ChallengerRepository challengerRepository;
+//    private DiaryRepository diaryRepository;
 
     public UserController(UserRepository userRepository, FollowRepository followRepository, LikeRepository likeRepository, PostRepository postRepository, ChallengerRepository challengerRepository, DiaryRepository diaryRepository, BlacklistRepository blacklistRepository) {
         this.userRepository = userRepository;
-        this.followRepository = followRepository;
-        this.likeRepository = likeRepository;
-        this.postRepository = postRepository;
-        this.challengerRepository = challengerRepository;
-        this.diaryRepository = diaryRepository;
+//        this.followRepository = followRepository;
+//        this.likeRepository = likeRepository;
+//        this.postRepository = postRepository;
+//        this.challengerRepository = challengerRepository; 
+//        this.diaryRepository = diaryRepository;
         this.blacklistRepository = blacklistRepository;
     }
     
@@ -147,40 +147,6 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body("Password Successfully modify!");
     }
-
-    
-
-//    /*
-//     * 구글 회원가입
-//     */
-//	/*@PostMapping("/googleLogin")
-//	public ResponseEntity<String> loginUserWithGoogle(GoogleUserDto googleUserDto, HttpSession session) {
-//		String email = googleUserDto.getEmail();
-//		Optional<User> userOptional = userRepository.findByEmail(email);
-//
-//		// DB에 이미 존재한다면
-//		if(userOptional.isPresent()) {
-//			User existingUser = userOptional.get();
-//			session.setAttribute("user", existingUser);
-//			return ResponseEntity.ok("Existing Google user logged in successfully.");
-//		}
-//		// DB에 존재하지 않다면
-//		else {
-//			// 새로운 User 정보 저장
-//			User newUser = new User();
-//			newUser.setUserId(googleUserDto.getEmail());
-//			newUser.setEmail(googleUserDto.getEmail());
-//			newUser.setName(googleUserDto.getName());
-//			newUser.setLevel(1);
-//			// 비밀번호는 설정x
-//
-//			// 저장
-//			userRepository.save(newUser);
-//			session.setAttribute("user", newUser);
-//			return ResponseEntity.ok().body("New Google user created and logged in successfully.");
-//		}
-//
-//	}*/
 
     //블랙리스트
     public void checkBlacklist(String token) {

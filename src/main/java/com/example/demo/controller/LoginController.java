@@ -51,33 +51,29 @@ public class LoginController {
   }
   
 
-	@GetMapping({ "", "/" })
-	public @ResponseBody String index() {
-		return "인덱스 페이지입니다.";
+//	@GetMapping({ "", "/" })
+//	public @ResponseBody String index() {
+//		return "인덱스페이지";
+//	}
+//	
+	/*
+     * 회원가입
+     */
+	@GetMapping("/sign_in")
+	public String getSigninPage() {
+		return "join";
 	}
 	
+	/*
+     * 로그인
+     */
 	@GetMapping("/log_in")
     public String showLoginPage() {
         return "login"; // 'login.mustache' 파일을 렌더링
     }
 	
-	@GetMapping("/join")
-	public String join() {
-		return "join";
-	}
-
-//	@PostMapping("/joinProc")
-//	public String joinProc(User user) {
-//		System.out.println("회원가입 진행 : " + user);
-//		user.setAuth(0);	//기본값 : 0(비공개)
-//        user.setLevel(1);	//기본값 : 1(lv.)
-//        
-//		userRepository.save(user);
-//		return "redirect:/";
-//	}
-	
 	/*
-     * 회원가입
+     * 회원가입 처리
      */
     // POST /sign_up
     @PostMapping("/sign_up")
@@ -96,7 +92,7 @@ public class LoginController {
     
   
     /*
-     * 로그인(토큰 발급 추가 완)
+     * 로그인 처리(토큰 발급 추가 완)
      */
     // POST /log_in
     @PostMapping("/log_in")
